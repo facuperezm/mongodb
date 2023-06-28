@@ -1,20 +1,20 @@
 import NextAuth from 'next-auth/next'
 import GoogleProvider from 'next-auth/providers/google'
 
-import User from '@models/user'
-import { connectDB } from '@utils/connectDB'
+import User from '@/models/user'
+import { connectDB } from '@/utils/connectdb'
 
 const handler = NextAuth({
 	providers: [
 		GoogleProvider({
-			clientId: process.env.GOOGLE_ID,
-			clientSecret: process.env.GOOGLE_SECRET
+			clientId: process.env.GOOGLE_ID || '',
+			clientSecret: process.env.GOOGLE_SECRET || ''
 		})
 	],
 	callbacks: {
 		async session({ session }) {
-			const sessionUser = await User.findOne({ email: session.user.email })
-			session.user.id = sessionUser._id.toString()
+			const sessionUser = await User.findOne({ email: session.user!.email })
+			session.user! = sessionUser._id.toString()
 
 			return session
 		},
@@ -22,13 +22,13 @@ const handler = NextAuth({
 			try {
 				await connectDB()
 
-				const userExists = await User.findOne({ email: profile.email })
+				const userExists = await User.findOne({ email: profile!.email })
 
 				if (!userExists) {
 					await User.create({
-						email: profile.email,
-						username: profile.name,
-						image: profile.image
+						email: profile!.email,
+						username: profile!.name,
+						image: profile!.image
 					})
 				}
 
