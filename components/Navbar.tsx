@@ -16,12 +16,15 @@ const Nav = () => {
 	const [providers, setProviders] = useState(null)
 	const [toggleDropdown, setToggleDropdown] = useState(false)
 
+	useEffect(() => {
+		;(async () => {
+			const res = await getProviders()
+			setProviders(res)
+		})()
+	}, [])
+
 	return (
 		<nav className='w-full pt-3 mb-16 flex-between'>
-			<Link href='/' className='flex gap-2 flex-center'>
-				<p className='logo_text'>Promptify</p>
-			</Link>
-
 			{/* Desktop Navigation */}
 			<div className='hidden sm:flex'>
 				{session?.user ? (
@@ -35,7 +38,7 @@ const Nav = () => {
 						</button>
 
 						<Link href='/profile'>
-							<Image
+							<img
 								src={session?.user.image}
 								width={37}
 								height={37}
@@ -67,7 +70,7 @@ const Nav = () => {
 			<div className='relative flex sm:hidden'>
 				{session?.user ? (
 					<div className='flex'>
-						<Image
+						<img
 							src={session?.user.image}
 							width={37}
 							height={37}
